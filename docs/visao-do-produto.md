@@ -1,4 +1,4 @@
-# Visão do produto — Portal IA Docente FAMETRO 2027
+# Visão do produto - Portal IA Docente FAMETRO 2027
 
 ## Identificação
 
