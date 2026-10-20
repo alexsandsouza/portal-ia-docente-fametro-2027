@@ -233,7 +233,7 @@ export function createEnrollment(input: {
   state.codes.push({
     enrollmentId: enrollment.id,
     code: input.ids?.code ?? createOpaqueCode(),
-    createdAt: enrollment.confirmedAt,
+    createdAt: enrollment.confirmedAt ?? enrollment.createdAt,
   });
   audit(state, participant.email, "confirm", "enrollment", enrollment.id);
   for (const challenge of state.challenges) {

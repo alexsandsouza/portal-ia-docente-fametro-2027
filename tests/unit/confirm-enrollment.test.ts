@@ -15,6 +15,6 @@ describe("confirmação", () => {
     const again = confirmEnrollment(created.enrollment.id, "equipe@example.com");
     expect(again.ok).toBe(true);
     expect(getState().codes).toHaveLength(1);
-    expect(getState().enrollments.some((item) => item.status === "refused")).toBe(false);
+    expect(getState().enrollments.every((item) => item.status === "confirmed")).toBe(true);
   });
 });

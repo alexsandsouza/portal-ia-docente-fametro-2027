@@ -5,7 +5,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createEnrollment as createLocalEnrollment, forgetEnrollment, type Enrollment, type Participant } from "@/lib/store/memory";
 
 type Created = { ok: true; participant: Participant; enrollment: Enrollment };
-type Rejected = { ok: false; field?: "fullName" | "email"; message: string };
+type Rejected = { ok: false; field?: string; message: string };
 
 export async function createEnrollment(input: { fullName: string; email: string; now?: number }): Promise<Created | Rejected> {
   const supabase = createSupabaseAdminClient();
