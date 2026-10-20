@@ -1,4 +1,4 @@
-import { certificateAction, challengeAction, checkInAction, confirmAction, materialAction, withdrawAction } from "@/app/operacao/actions";
+import { certificateAction, checkInAction, confirmAction, materialAction, withdrawAction } from "@/app/operacao/actions";
 import { getState } from "@/lib/store/memory";
 
 export default async function OperationPage({
@@ -74,21 +74,6 @@ export default async function OperationPage({
             </li>
           ))}
         </ul>
-      </section>
-      <section className="mt-6">
-        <h2 className="text-xl font-semibold">Desafios</h2>
-        {state.challenges.map((challenge) => (
-          <form key={challenge.id} action={challengeAction} className="mt-3 grid gap-2 rounded border border-slate-300 p-3">
-            <input type="hidden" name="position" value={challenge.position} />
-            <label htmlFor={`title-${challenge.position}`}>Título {challenge.position}</label>
-            <input className="rounded border border-slate-400 px-3 py-2" id={`title-${challenge.position}`} name="title" defaultValue={challenge.title} />
-            <label htmlFor={`statement-${challenge.position}`}>Enunciado</label>
-            <textarea className="rounded border border-slate-400 px-3 py-2" id={`statement-${challenge.position}`} name="statement" defaultValue={challenge.statement ?? ""} />
-            <button className="w-fit rounded border border-slate-400 px-3 py-2" type="submit">
-              Atualizar
-            </button>
-          </form>
-        ))}
       </section>
       <section className="mt-6">
         <h2 className="text-xl font-semibold">Autorizar certificado</h2>

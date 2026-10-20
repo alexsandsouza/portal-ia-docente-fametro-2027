@@ -5,6 +5,8 @@ export const messages = {
   homeTitle: "Portal IA Docente FAMETRO 2027",
   localMode:
     "Modo local: os dados ficam na memória deste processo. Nenhum projeto Supabase foi configurado.",
+  databaseMode: "As inscrições ficam guardadas no banco do projeto.",
+  databaseUnavailable: "Não foi possível guardar a inscrição no banco.",
   pending: "pendente",
   confirmed: "confirmado",
   duplicate: "este e-mail já possui inscrição",
@@ -17,7 +19,7 @@ export const messages = {
   checkInDone: "O check-in já foi feito.",
   checkInInvalid: "Código recusado.",
   waitingContent: "Aguardando conteúdo.",
-  emptyMaterials: "Nenhum material publicado no momento.",
+  emptyMaterials: "Os materiais serão liberados ao final do evento.",
   linkReplaced: "Este vínculo não está mais vigente.",
   noOperationalList: "Nenhum e-mail operacional está configurado.",
 } as const;

@@ -10,7 +10,7 @@ test("publica, lista e retira material", async ({ browser }) => {
   const href = await enroll(participant, "Dora Melo", `dora.${Date.now()}@example.com`);
   await participant.goto(href);
   await participant.goto("/materiais");
-  await expect(participant.getByText("Nenhum material publicado no momento.")).toBeVisible();
+  await expect(participant.getByText("Os materiais serão liberados ao final do evento.")).toBeVisible();
 
   const title = `Roteiro ${Date.now()}`;
   const staff = await browser.newPage();

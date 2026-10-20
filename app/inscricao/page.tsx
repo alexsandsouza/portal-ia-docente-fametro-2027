@@ -26,7 +26,7 @@ export default async function InscricaoPage({
       </form>
       {query.erro ? <p className="mt-4 text-red-800">{query.erro}</p> : null}
       {query.id && query.estado && query.vinculo ? (
-        <Receipt id={query.id} status={query.estado} link={query.vinculo} />
+        <Receipt id={query.id} status={query.estado} link={query.vinculo} email={query.email} />
       ) : null}
       <p className="mt-6 text-sm text-slate-600">{messages.formation}</p>
     </main>

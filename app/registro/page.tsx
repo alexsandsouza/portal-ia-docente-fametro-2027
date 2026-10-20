@@ -22,13 +22,6 @@ export default async function RegistroPage({
           <li>Inscrição em {record.enrollment?.createdAt}</li>
           {record.enrollment?.confirmedAt ? <li>Confirmação em {record.enrollment.confirmedAt}</li> : null}
           {record.checkIn ? <li>Check-in em {record.checkIn.checkedInAt}</li> : null}
-          {record.challenges
-            .filter((item) => item.progress?.status === "completed")
-            .map((item) => (
-              <li key={item.challenge.id}>
-                Desafio {item.challenge.position} concluído em {item.progress?.completedAt}
-              </li>
-            ))}
           {record.certificate ? <li>Certificado emitido em {record.certificate.issuedAt}</li> : null}
         </ol>
       ) : null}

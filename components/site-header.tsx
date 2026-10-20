@@ -6,7 +6,6 @@ const sections = [
   ["/", "Início"],
   ["/inscricao", "Inscrição"],
   ["/materiais", "Materiais"],
-  ["/laboratorio", "Laboratório"],
   ["/certificado", "Certificado"],
 ];
 

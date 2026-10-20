@@ -2,10 +2,12 @@ import { EventList } from "@/components/event-list";
 import { readSession } from "@/lib/auth/session";
 import { messages } from "@/lib/messages/pt-br";
 import { recordFor } from "@/lib/records/participant-record";
+import { loadRemoteRecord } from "@/lib/store/remote-portal";
 
 export default async function FichaPage() {
   const session = await readSession();
-  const record = session?.role === "participant" ? recordFor(session.email) : null;
+  const local = session?.role === "participant" ? recordFor(session.email) : null;
+  const record = local?.enrollment ? local : session?.role === "participant" ? await loadRemoteRecord(session.email) : null;
   if (!record?.enrollment) {
     return (
       <main className="mx-auto max-w-xl px-4 py-8">
@@ -28,9 +30,6 @@ export default async function FichaPage() {
           record.enrollment.createdAt ? `Inscrição em ${record.enrollment.createdAt}` : "",
           record.enrollment.confirmedAt ? `Confirmação em ${record.enrollment.confirmedAt}` : "",
           record.checkIn ? `Check-in em ${record.checkIn.checkedInAt}` : "",
-          ...record.challenges
-            .filter((item) => item.progress?.completedAt)
-            .map((item) => `Desafio ${item.challenge.position} concluído em ${item.progress?.completedAt}`),
         ].filter((item) => item.length > 0)}
       />
     </main>

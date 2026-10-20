@@ -7,18 +7,14 @@ describe("confirmação", () => {
     process.env.OPERATIONAL_EMAILS = "equipe@example.com";
   });
 
-  it("só o papel operacional confirma e não há volta", () => {
+  it("nasce confirmada e um segundo ato não cria outro código", () => {
     const created = createEnrollment({ fullName: "Ana Costa", email: "ana@example.com" });
     if (!created.ok) throw new Error("inscrição");
-    expect(confirmEnrollment(created.enrollment.id, "ana@example.com").ok).toBe(false);
-    expect(created.enrollment.status).toBe("pending");
-    const confirmed = confirmEnrollment(created.enrollment.id, "equipe@example.com");
-    expect(confirmed.ok).toBe(true);
-    if (confirmed.ok) {
-      expect(confirmed.enrollment.status).toBe("confirmed");
-      expect(confirmed.enrollment.confirmedAt).toBeTruthy();
-      expect(confirmed.enrollment.confirmedBy).toBe("equipe@example.com");
-    }
+    expect(created.enrollment.status).toBe("confirmed");
+    expect(created.enrollment.confirmedBy).toBe("ana@example.com");
+    const again = confirmEnrollment(created.enrollment.id, "equipe@example.com");
+    expect(again.ok).toBe(true);
+    expect(getState().codes).toHaveLength(1);
     expect(getState().enrollments.some((item) => item.status === "refused")).toBe(false);
   });
 });

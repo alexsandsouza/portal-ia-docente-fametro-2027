@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { getSessionById, type Session } from "@/lib/store/memory";
+import { readRemoteSession } from "@/lib/store/remote-portal";
 
 const COOKIE = "portal_sid";
 
@@ -7,7 +8,7 @@ export async function readSession(): Promise<Session | null> {
   const jar = await cookies();
   const id = jar.get(COOKIE)?.value;
   if (!id) return null;
-  return getSessionById(id);
+  return getSessionById(id) ?? (await readRemoteSession(id));
 }
 
 export async function writeSession(sessionId: string) {

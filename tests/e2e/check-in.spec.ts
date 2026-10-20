@@ -6,7 +6,6 @@ test("check-in por texto aceita uma vez e recusa repetido e inválido", async ({
   const href = await enroll(participant, "Caio Lima", `caio.${Date.now()}@example.com`);
   const staff = await browser.newPage();
   await enterStaff(staff);
-  await staff.getByRole("button", { name: "Confirmar Caio Lima" }).click();
   await participant.goto(href);
   await participant.goto("/check-in/codigo");
   const text = await participant.getByText("Código em texto:").textContent();

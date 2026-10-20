@@ -43,17 +43,17 @@ A pessoa participante informa os dados pedidos no formulário, envia a inscriç�
 
 ### User Story 2 - Acompanhar a confirmação (Priority: P1)
 
-A pessoa participante e a equipe autorizada enxergam se a inscrição está pendente ou confirmada. A confirmação é um ato distinto do registro inicial.
+A inscrição válida já nasce confirmada e a ficha fica disponível. Os materiais só aparecem quando a equipe os liberar ao final do evento. O certificado é gerado depois, para download e envio ao e-mail cadastrado.
 
-**Why this priority**: A confirmação separa quem apenas se inscreveu de quem está apto a seguir na formação.
+**Why this priority**: O docente precisa entrar na formação no momento da inscrição, sem fila de confirmação.
 
-**Independent Test**: Com uma inscrição pendente, a equipe autorizada confirma e a pessoa participante passa a ver o estado confirmado. Sem esse ato, o estado permanece pendente.
+**Independent Test**: Uma inscrição válida mostra o estado confirmado e a ficha. Os materiais continuam ocultos até a liberação final, e o PDF do certificado não aparece só por causa da inscrição.
 
 **Acceptance Scenarios**:
 
-1. **Given** uma inscrição pendente, **When** uma pessoa com papel operacional confirma, **Then** o estado visível para a participante e para a equipe passa a ser confirmado e a data da confirmação fica registrada.
-2. **Given** uma inscrição pendente, **When** a própria participante tenta confirmar a si mesma, **Then** o estado permanece pendente.
-3. **Given** uma inscrição confirmada, **When** a participante consulta a própria inscrição, **Then** o portal mostra o estado confirmado em português.
+1. **Given** nome e e-mail válidos, **When** a inscrição é criada, **Then** o estado visível é confirmado, a data fica registrada e o código de check-in passa a existir.
+2. **Given** uma inscrição recém-criada, **When** a participante abre o vínculo vigente, **Then** a ficha está disponível e os materiais ainda não foram liberados.
+3. **Given** uma inscrição confirmada sem autorização de certificado, **When** a participante abre o certificado, **Then** o portal não entrega o PDF.
 
 ---
 
@@ -90,9 +90,13 @@ A pessoa participante vê a lista de materiais publicados e segue para o arquivo
 
 ---
 
-### User Story 5 - Percorrer os cinco desafios (Priority: P2)
+### User Story 5 - Laboratório retirado em 2026-10-20
 
-O portal apresenta exatamente cinco desafios de IA. Cada participante tem um andamento próprio em cada desafio: não iniciado ou concluído pela própria pessoa. O enunciado é publicado pela equipe; enquanto um desafio não tiver enunciado, ele aparece como aguardando conteúdo e não pode ser concluído.
+O laboratório de cinco desafios saiu desta versão. O portal guarda a inscrição, libera os materiais ao final do evento e gera o certificado para download e envio ao e-mail cadastrado.
+
+O texto abaixo permanece só como histórico da ideia anterior. A participante não vê mais desafios.
+
+O portal apresentava exatamente cinco desafios de IA. Cada participante tinha um andamento próprio em cada desafio: não iniciado ou concluído pela própria pessoa. O enunciado era publicado pela equipe; enquanto um desafio não tivesse enunciado, ele aparecia como aguardando conteúdo e não podia ser concluído.
 
 **Why this priority**: O laboratório é uma capacidade prometida da formação. O conteúdo de cada desafio ainda depende da instituição, mas o percurso e o registro já podem ser especificados.
 
@@ -192,14 +196,14 @@ A pessoa participante pede para ver os próprios dados, corrigir o nome ou regis
 - **FR-001**: O portal MUST permitir que uma pessoa envie uma inscrição na Formação Docente 2027 e MUST exibir comprovante quando o registro for criado.
 - **FR-002**: O portal MUST exigir nome completo e e-mail válidos na inscrição e MUST recusar o envio quando esses dados faltarem ou o e-mail for inválido.
 - **FR-003**: O portal MUST manter no máximo uma inscrição ativa por e-mail. Uma nova tentativa sem o vínculo vigente MUST responder apenas «este e-mail já possui inscrição» e MUST NOT revelar nome, estado nem identificador. Quem abre o vínculo vigente MUST ver a própria ficha.
-- **FR-004**: O portal MUST aceitar a inscrição de qualquer pessoa que informe nome completo e e-mail válidos. O e-mail MUST ser o identificador da pessoa. O portal MUST NOT exigir domínio institucional nem lista prévia. A confirmação MUST continuar sendo uma ação manual da equipe operacional.
-- **FR-005**: O portal MUST criar a inscrição no estado pendente e MUST mudar para confirmado somente por ação de pessoa com papel operacional.
+- **FR-004**: O portal MUST aceitar a inscrição de qualquer pessoa que informe nome completo e e-mail válidos. O e-mail MUST ser o identificador da pessoa. O portal MUST NOT exigir domínio institucional nem lista prévia.
+- **FR-005**: O portal MUST criar a inscrição já confirmada, registrar a data e liberar a ficha e o código de check-in sem ação operacional. Essa criação MUST NOT liberar materiais ainda não publicados nem emitir o certificado.
 - **FR-006**: A pessoa participante MUST conseguir ver se a própria inscrição está pendente ou confirmada ao abrir o vínculo vigente enviado ao e-mail dela.
 - **FR-020**: Depois da inscrição, o portal MUST enviar ao e-mail informado um vínculo pessoal, sem senha. Esse vínculo MUST abrir somente a ficha daquela pessoa. Um novo vínculo MUST invalidar o anterior na hora. O tempo de vida do vínculo ainda não aberto segue a configuração do projeto Supabase e MUST NOT ser tratado como número fixo desta versão. O portal MUST NOT criar senha para a participante.
 - **FR-007**: O portal MUST emitir, para cada inscrição confirmada, um código de check-in opaco, utilizável como gráfico e como texto, sem dados pessoais legíveis.
 - **FR-008**: O portal MUST registrar um único check-in por inscrição confirmada e MUST recusar código inválido, inscrição não confirmada e leitura repetida.
 - **FR-009**: A equipe MUST conseguir publicar material com título, descrição e destino no Google Drive. O arquivo MUST permanecer no Drive. A participante com inscrição MUST conseguir abrir os materiais publicados, e uma pessoa sem inscrição MUST NOT vê-los.
-- **FR-010**: O portal MUST apresentar exatamente cinco desafios. Cada desafio publicado MUST ter enunciado. A participante MUST conseguir marcar como concluído apenas desafio que já tenha enunciado, e o portal MUST guardar o andamento individual.
+- **FR-010**: O portal MUST NOT oferecer laboratório nem desafios nesta versão. Os materiais MUST permanecer ocultos até a equipe liberá-los ao final do evento. Quando o certificado for autorizado, o portal MUST permitir o download do PDF e MUST enviá-lo ao e-mail da inscrição se o envio estiver configurado.
 - **FR-011**: A ficha da participante MUST listar, com data, a inscrição, a confirmação, o check-in e a conclusão de desafio que já tiverem ocorrido. A participante MUST ver somente a própria ficha. A equipe operacional MUST conseguir consultar a ficha de cada participante.
 - **FR-012**: O portal MUST separar a superfície da participante da superfície operacional. Conta sem papel operacional MUST NOT executar confirmação, check-in, publicação, edição de desafio ou emissão.
 - **FR-013**: Cada ação operacional MUST ficar registrada com autor e data, em consulta restrita à equipe operacional.
@@ -240,7 +244,7 @@ A pessoa participante pede para ver os próprios dados, corrigir o nome ou regis
 ## Assumptions
 
 - Qualquer pessoa com nome completo e e-mail válidos pode pedir a vaga. O e-mail identifica a pessoa. Não há domínio institucional nem lista prévia. A equipe confirma ou recusa depois, manualmente. O identificador de inscrição duplicada é o e-mail.
-- A confirmação é manual, feita por quem tem papel operacional. O estado confirmado aparece na ficha e não depende de a pessoa ler uma mensagem. O retorno à ficha usa o vínculo pessoal enviado ao e-mail da inscrição, sem senha. Um novo vínculo invalida o anterior.
+- A inscrição válida já fica confirmada e libera a ficha e o código de check-in. Os materiais são liberados ao final do evento. O retorno à ficha usa o vínculo pessoal enviado ao e-mail da inscrição, sem senha. Um novo vínculo invalida o anterior. O certificado é gerado para download e envio ao e-mail cadastrado.
 - O check-in ocorre com o portal acessível. Não há fila offline nesta versão. Não há data de expiração do código enquanto a instituição não definir a janela do evento. A segunda leitura não cria outro check-in.
 - Quem lê o código é uma pessoa com papel operacional. A participante exibe o código.
 - A equipe publica cada material com o destino já existente no Google Drive. Identificador de pasta, visibilidade da conta Google e credencial de acesso não fazem parte desta spec.

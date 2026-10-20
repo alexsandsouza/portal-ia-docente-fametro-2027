@@ -6,7 +6,7 @@ test("inscrição pendente e repetição sem revelar dados", async ({ page }) =>
   await page.getByLabel("Nome completo").fill("Ana Costa");
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Enviar inscrição" }).click();
-  await expect(page.getByText("Estado: pendente")).toBeVisible();
+  await expect(page.getByText("Estado: confirmado")).toBeVisible();
   await expect(page.getByText("Identificador:")).toBeVisible();
 
   await page.goto("/inscricao");

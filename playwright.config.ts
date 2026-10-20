@@ -11,6 +11,6 @@ export default defineConfig({
     url: "http://127.0.0.1:3000",
     reuseExistingServer: false,
     timeout: 120000,
-    env: { ...process.env, OPERATIONAL_EMAILS: "equipe@example.com" },
+    env: { ...process.env, OPERATIONAL_EMAILS: "equipe@example.com", PORTAL_DATA: "local" },
   },
 });

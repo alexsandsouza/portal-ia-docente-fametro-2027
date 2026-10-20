@@ -12,13 +12,14 @@ describe("inscrição", () => {
     if (!result.ok) expect(result.message).toBe(messages.nameRequired);
   });
 
-  it("guarda o e-mail em minúsculas e o estado pendente", () => {
+  it("guarda o e-mail em minúsculas e já confirma a inscrição", () => {
     const result = createEnrollment({ fullName: "  Ana Costa  ", email: "Ana@Example.com" });
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.participant.email).toBe("ana@example.com");
       expect(result.participant.fullName).toBe("Ana Costa");
-      expect(result.enrollment.status).toBe("pending");
+      expect(result.enrollment.status).toBe("confirmed");
+      expect(result.enrollment.confirmedAt).toBeTruthy();
     }
   });
 

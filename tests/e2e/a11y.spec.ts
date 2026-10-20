@@ -11,12 +11,12 @@ for (const width of [390, 1280]) {
   });
 }
 
-test("check-in, biblioteca, laboratório e consulta pública têm caminho em texto", async ({ page }) => {
+test("biblioteca, certificado e consulta pública têm caminho em texto", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto("/materiais");
   await expect(page.getByRole("heading", { name: "Materiais" })).toBeVisible();
-  await page.goto("/laboratorio");
-  await expect(page.getByRole("heading", { name: "Laboratório" })).toBeVisible();
+  await page.goto("/certificado");
+  await expect(page.getByRole("heading", { name: "Certificado" })).toBeVisible();
   await page.goto("/certificados/ausente");
   await expect(page.getByRole("heading", { name: "Autenticidade" })).toBeVisible();
   await page.goto("/operacao");

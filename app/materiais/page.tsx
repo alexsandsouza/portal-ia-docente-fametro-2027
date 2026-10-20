@@ -1,10 +1,14 @@
 import { readSession } from "@/lib/auth/session";
 import { messages } from "@/lib/messages/pt-br";
 import { publishedMaterials, participantByEmail } from "@/lib/store/memory";
+import { loadPublishedMaterials, loadRemoteRecord } from "@/lib/store/remote-portal";
 
 export default async function MateriaisPage() {
   const session = await readSession();
-  const participant = session?.role === "participant" ? participantByEmail(session.email) : null;
+  const localParticipant = session?.role === "participant" ? participantByEmail(session.email) : null;
+  const remote = !localParticipant && session?.role === "participant" ? await loadRemoteRecord(session.email) : null;
+  const participant = localParticipant ?? remote?.participant ?? null;
+  const items = localParticipant ? publishedMaterials() : await loadPublishedMaterials();
   if (!participant) {
     return (
       <main className="mx-auto max-w-xl px-4 py-8">
@@ -13,7 +17,6 @@ export default async function MateriaisPage() {
       </main>
     );
   }
-  const items = publishedMaterials();
   return (
     <main className="mx-auto max-w-xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Materiais</h1>

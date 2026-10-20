@@ -5,7 +5,7 @@ export async function enroll(page: Page, name: string, email: string) {
   await page.getByLabel("Nome completo").fill(name);
   await page.getByLabel("E-mail").fill(email);
   await page.getByRole("button", { name: "Enviar inscrição" }).click();
-  await expect(page.getByText("Estado: pendente")).toBeVisible();
+  await expect(page.getByText("Estado: confirmado")).toBeVisible();
   const href = await page.getByRole("link", { name: "Abrir o vínculo vigente" }).getAttribute("href");
   if (!href) throw new Error("vínculo ausente");
   return href;

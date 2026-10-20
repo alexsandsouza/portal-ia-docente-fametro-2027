@@ -1,6 +1,6 @@
 # Portal IA Docente FAMETRO 2027
 
-Portal da Formação Docente 2027 do Centro Universitário CEUNI FAMETRO. A pessoa se inscreve com nome e e-mail, acompanha a confirmação, faz check-in, consulta materiais no Google Drive, percorre cinco desafios e baixa o certificado depois que a equipe autoriza.
+Portal da Formação Docente 2027 do Centro Universitário CEUNI FAMETRO. A pessoa se inscreve com nome e e-mail. Os materiais são liberados ao final do evento. O certificado, quando emitido, pode ser baixado e é enviado ao e-mail cadastrado.
 
 O repositório é privado. A especificação vigente está em `specs/001-portal-formacao-docente`.
 
@@ -25,8 +25,15 @@ Copie `.env.example` para `.env.local` e preencha fora do Git:
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `OPERATIONAL_EMAILS`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `EMAIL_FROM`
 
 `OPERATIONAL_EMAILS` é a lista de e-mails da equipe, separada por vírgula. Com a lista vazia, ninguém entra em `/operacao`.
+
+O envio do vínculo e do certificado sai pelo Gmail (`smtp.gmail.com`, porta 587). `SMTP_USER` e `EMAIL_FROM` são a conta que envia. `SMTP_PASS` é a senha de app dessa conta. Sem esses três, o PDF continua disponível para download e o vínculo aparece no comprovante.
 
 O projeto Supabase e a publicação na Vercel ainda não existem. Não há URL nem chave neste repositório.
 

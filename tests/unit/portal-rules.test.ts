@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { messages } from "@/lib/messages/pt-br";
 import {
   authorizeCertificate,
-  completeChallenge,
   confirmEnrollment,
   confirmLink,
   createEnrollment,
@@ -13,7 +12,6 @@ import {
   recordDataRequest,
   resetState,
   sendNewLink,
-  updateChallenge,
 } from "@/lib/store/memory";
 
 describe("regras do portal", () => {
@@ -22,12 +20,10 @@ describe("regras do portal", () => {
     process.env.OPERATIONAL_EMAILS = "equipe@example.com";
   });
 
-  it("só confirma com e-mail operacional e gera um código", () => {
+  it("libera um código na inscrição", () => {
     const created = createEnrollment({ fullName: "Ana Costa", email: "ana@example.com" });
     if (!created.ok) throw new Error("inscrição");
-    expect(confirmEnrollment(created.enrollment.id, "outra@example.com").ok).toBe(false);
-    const confirmed = confirmEnrollment(created.enrollment.id, "equipe@example.com");
-    expect(confirmed.ok).toBe(true);
+    expect(created.enrollment.status).toBe("confirmed");
     expect(getState().codes).toHaveLength(1);
     expect(getState().actions[0]?.action).toBe("confirm");
   });
@@ -51,9 +47,7 @@ describe("regras do portal", () => {
     expect(recordCheckIn("nao-existe", "equipe@example.com").ok).toBe(false);
   });
 
-  it("publica só destino do Drive e conclui só desafio com enunciado", () => {
-    const created = createEnrollment({ fullName: "Ana Costa", email: "ana@example.com" });
-    if (!created.ok) throw new Error("inscrição");
+  it("publica só destino do Drive", () => {
     expect(publishMaterial({
       title: "Roteiro",
       description: "Leitura",
@@ -68,11 +62,6 @@ describe("regras do portal", () => {
       published: true,
       actorEmail: "equipe@example.com",
     }).ok).toBe(true);
-    expect(completeChallenge("ana@example.com", 1).ok).toBe(false);
-    confirmEnrollment(created.enrollment.id, "equipe@example.com");
-    expect(completeChallenge("ana@example.com", 1).ok).toBe(false);
-    updateChallenge(1, "Desafio 1", "Enunciado publicado", "equipe@example.com");
-    expect(completeChallenge("ana@example.com", 1).ok).toBe(true);
   });
 
   it("autoriza um certificado por pessoa e consulta sem e-mail", () => {

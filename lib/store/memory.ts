@@ -62,6 +62,8 @@ export type Certificate = {
   authenticityCode: string;
   issuedAt: string;
   authorizedBy: string;
+  emailStatus: "pending" | "sent" | "not_configured" | "failed";
+  emailSentAt: string | null;
 };
 export type DataRequest = {
   id: string;
@@ -128,8 +130,12 @@ const memory = globalThis as typeof globalThis & { __portalState?: State };
 
 function persist(state: State) {
   if (process.env.VITEST) return;
-  mkdirSync(path.dirname(stateFile), { recursive: true });
-  writeFileSync(stateFile, JSON.stringify(state));
+  try {
+    mkdirSync(path.dirname(stateFile), { recursive: true });
+    writeFileSync(stateFile, JSON.stringify(state));
+  } catch {
+    memory.__portalState = state;
+  }
 }
 
 export function getState(): State {
@@ -137,12 +143,18 @@ export function getState(): State {
     if (!memory.__portalState) memory.__portalState = emptyState();
     return memory.__portalState;
   }
+  if (memory.__portalState && process.env.VERCEL) return memory.__portalState;
   try {
     return JSON.parse(readFileSync(stateFile, "utf8")) as State;
-  } catch {
-    const state = emptyState();
-    persist(state);
-    return state;
+  } catch (error) {
+    const missing = (error as NodeJS.ErrnoException).code === "ENOENT";
+    if (missing && !process.env.VERCEL) {
+      const state = emptyState();
+      persist(state);
+      return state;
+    }
+    if (!memory.__portalState) memory.__portalState = emptyState();
+    return memory.__portalState;
   }
 }
 
@@ -176,7 +188,12 @@ function hitRate(state: State, scope: RateScope, subjectKey: string, now: number
   return result.blocked;
 }
 
-export function createEnrollment(input: { fullName: string; email: string; now?: number }) {
+export function createEnrollment(input: {
+  fullName: string;
+  email: string;
+  now?: number;
+  ids?: { participantId: string; enrollmentId: string; code: string; accessToken: string };
+}) {
   const state = getState();
   const now = input.now ?? Date.now();
   const fullName = normalizeName(input.fullName);
@@ -196,23 +213,29 @@ export function createEnrollment(input: { fullName: string; email: string; now?:
     return saved(state, { ok: false as const, field: "email", message: blocked ? messages.rateLimited : messages.duplicate });
   }
   const participant: Participant = {
-    id: id("par"),
+    id: input.ids?.participantId ?? id("par"),
     fullName,
     email,
     accessLinkVersion: 1,
-    accessToken: createOpaqueCode(),
+    accessToken: input.ids?.accessToken ?? createOpaqueCode(),
     createdAt: new Date(now).toISOString(),
   };
   const enrollment: Enrollment = {
-    id: id("ins"),
+    id: input.ids?.enrollmentId ?? id("ins"),
     participantId: participant.id,
-    status: "pending",
+    status: "confirmed",
     createdAt: participant.createdAt,
-    confirmedAt: null,
-    confirmedBy: null,
+    confirmedAt: participant.createdAt,
+    confirmedBy: participant.email,
   };
   state.participants.push(participant);
   state.enrollments.push(enrollment);
+  state.codes.push({
+    enrollmentId: enrollment.id,
+    code: input.ids?.code ?? createOpaqueCode(),
+    createdAt: enrollment.confirmedAt,
+  });
+  audit(state, participant.email, "confirm", "enrollment", enrollment.id);
   for (const challenge of state.challenges) {
     state.progress.push({
       participantId: participant.id,
@@ -265,7 +288,8 @@ export function confirmEnrollment(enrollmentId: string, actorEmail: string) {
   if (!isOperationalEmail(actorEmail)) return { ok: false as const, message: messages.accessDenied };
   const state = getState();
   const enrollment = state.enrollments.find((item) => item.id === enrollmentId);
-  if (!enrollment || enrollment.status !== "pending") return { ok: false as const, message: messages.accessDenied };
+  if (!enrollment) return { ok: false as const, message: messages.accessDenied };
+  if (enrollment.status === "confirmed") return { ok: true as const, enrollment };
   const actor = normalizeEmail(actorEmail)!;
   enrollment.status = "confirmed";
   enrollment.confirmedAt = new Date().toISOString();
@@ -394,10 +418,22 @@ export function authorizeCertificate(participantId: string, actorEmail: string) 
     authenticityCode: createOpaqueCode(),
     issuedAt: new Date().toISOString(),
     authorizedBy: actor,
+    emailStatus: "pending",
+    emailSentAt: null,
   };
   state.certificates.push(certificate);
   audit(state, actor, "authorize-certificate", "certificate", certificate.id);
   return saved(state, { ok: true as const, certificate, created: true });
+}
+
+export function markCertificateEmail(participantId: string, status: "sent" | "not_configured" | "failed") {
+  const state = getState();
+  const certificate = state.certificates.find((item) => item.participantId === participantId);
+  if (!certificate) return null;
+  certificate.emailStatus = status;
+  certificate.emailSentAt = status === "sent" ? new Date().toISOString() : null;
+  persist(state);
+  return certificate;
 }
 
 export function lookupCertificate(code: string, now = Date.now()) {
@@ -446,6 +482,20 @@ export function recordDataRequest(email: string, kind: RequestKind, newName?: st
     executedAt: null,
   });
   return saved(state, { ok: true as const, participant });
+}
+
+export function forgetEnrollment(email: string) {
+  const state = getState();
+  const normalized = normalizeEmail(email);
+  const participant = state.participants.find((item) => item.email === normalized);
+  if (!participant) return;
+  const enrollmentIds = state.enrollments.filter((item) => item.participantId === participant.id).map((item) => item.id);
+  state.participants = state.participants.filter((item) => item.id !== participant.id);
+  state.enrollments = state.enrollments.filter((item) => item.participantId !== participant.id);
+  state.codes = state.codes.filter((item) => !enrollmentIds.includes(item.enrollmentId));
+  state.progress = state.progress.filter((item) => item.participantId !== participant.id);
+  state.actions = state.actions.filter((item) => !enrollmentIds.includes(item.targetId));
+  persist(state);
 }
 
 export function participantByEmail(email: string) {
