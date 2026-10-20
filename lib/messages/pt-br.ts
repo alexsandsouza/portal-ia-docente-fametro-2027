@@ -1,0 +1,23 @@
+export const messages = {
+  formation: "Formação Docente 2027",
+  institution: "Centro Universitário CEUNI FAMETRO",
+  skip: "Pular para o conteúdo",
+  homeTitle: "Portal IA Docente FAMETRO 2027",
+  localMode:
+    "Modo local: os dados ficam na memória deste processo. Nenhum projeto Supabase foi configurado.",
+  pending: "pendente",
+  confirmed: "confirmado",
+  duplicate: "este e-mail já possui inscrição",
+  nameRequired: "Informe o nome completo.",
+  emailInvalid: "Informe um e-mail válido.",
+  rateLimited: "Muitas tentativas inválidas. Tente de novo em 15 minutos.",
+  accessDenied: "Acesso recusado.",
+  notAuthorizedCertificate: "A emissão ainda não foi autorizada.",
+  certificateMissing: "Não há certificado correspondente.",
+  checkInDone: "O check-in já foi feito.",
+  checkInInvalid: "Código recusado.",
+  waitingContent: "Aguardando conteúdo.",
+  emptyMaterials: "Nenhum material publicado no momento.",
+  linkReplaced: "Este vínculo não está mais vigente.",
+  noOperationalList: "Nenhum e-mail operacional está configurado.",
+} as const;

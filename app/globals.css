@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+:root {
+  --fametro-navy: #0a2f86;
+  --fametro-blue: #0e4eab;
+  --fametro-red: #c8102e;
+  --fametro-ink: #10233f;
+  --fametro-muted: #4c5d75;
+  --fametro-line: #d5e2f2;
+  --fametro-paper: #f4f7fb;
+  --fametro-card: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--fametro-blue);
+  outline-offset: 3px;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 100% 0, rgb(14 78 171 / 12%), transparent 28rem),
+    var(--fametro-paper);
+  color: var(--fametro-ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+a {
+  color: var(--fametro-blue);
+  font-weight: 600;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  transform: translateY(-150%);
+  background: white;
+  color: var(--fametro-navy);
+  padding: 0.5rem 0.75rem;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.utility-bar {
+  background: var(--fametro-navy);
+  color: white;
+}
+
+.utility-bar a {
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.brand-bar {
+  background: white;
+  border-bottom: 1px solid var(--fametro-line);
+}
+
+.page {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+main h1 {
+  color: var(--fametro-navy);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+main h1::after {
+  content: "";
+  display: block;
+  width: 3.4rem;
+  height: 4px;
+  margin-top: 0.7rem;
+  border-radius: 999px;
+  background: var(--fametro-red);
+}
+
+main h2 {
+  color: var(--fametro-navy);
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid #b7c7dc;
+  border-radius: 0.7rem;
+  background: white;
+  padding: 0.7rem 0.8rem;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--fametro-red);
+  color: white;
+  font-weight: 700;
+  padding: 0.65rem 1.15rem;
+  cursor: pointer;
+}
+
+button.quiet {
+  background: white;
+  color: var(--fametro-navy);
+  border: 1px solid var(--fametro-line);
+}
+
+.hero-kicker {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--fametro-red);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+}
+
+.portal-card {
+  display: block;
+  border: 1px solid var(--fametro-line);
+  border-radius: 1rem;
+  background: white;
+  color: var(--fametro-navy);
+  text-decoration: none;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 30px rgb(10 47 134 / 6%);
+}
+
+.portal-card:hover {
+  border-color: var(--fametro-blue);
+}
+
+.site-footer {
+  border-top: 4px solid var(--fametro-red);
+  background: white;
+  color: var(--fametro-muted);
+}

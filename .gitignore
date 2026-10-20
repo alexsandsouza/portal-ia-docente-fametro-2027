@@ -5,3 +5,10 @@ node_modules/
 .next/
 .vercel/
 *.pem
+dist/
+build/
+coverage/
+*.log
+playwright-report/
+test-results/
+.data/
