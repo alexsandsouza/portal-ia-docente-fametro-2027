@@ -1,33 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SiteMenu } from "@/components/site-menu";
+import { readSession } from "@/lib/auth/session";
 import { messages } from "@/lib/messages/pt-br";
 
-const sections = [
-  ["/", "Início"],
-  ["/o-portal", "O Portal"],
-  ["/formacoes", "Formações"],
-  ["/programacao", "Programação"],
-  ["/orientacoes", "Orientações"],
-  ["/contato", "Fale conosco"],
-];
-
-export function SiteHeader() {
+export async function SiteHeader() {
+  const session = await readSession();
   return (
     <header className="brand-bar">
-      <div className="mx-auto flex w-[min(72rem,calc(100%-2rem))] flex-wrap items-center justify-between gap-4 py-4">
+      <div className="brand-inner">
         <Link href="/" className="inline-flex items-center no-underline" aria-label="FAMETRO Centro Universitário">
           <Image src="/fametro-logo.png" alt="" width={156} height={52} priority />
         </Link>
-        <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Atalhos">
-          {sections.map(([href, label]) => (
-            <Link key={href} href={href}>
-              {label}
-            </Link>
-          ))}
-          <Link className="header-enter" href="/conta">
-            Minha área
-          </Link>
-        </nav>
+        <SiteMenu signedIn={Boolean(session)} />
       </div>
       <p className="sr-only">{messages.homeTitle}</p>
     </header>

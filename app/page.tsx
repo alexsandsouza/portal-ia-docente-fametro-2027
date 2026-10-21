@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { signOut } from "@/app/sair/actions";
+import { readSession } from "@/lib/auth/session";
 import { messages } from "@/lib/messages/pt-br";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await readSession();
   return (
     <main>
       <section className="home-hero">
@@ -15,8 +18,19 @@ export default function HomePage() {
               Um ambiente institucional para aprender, compartilhar experiências e fortalecer práticas pedagógicas ao longo da trajetória docente.
             </p>
             <p className="home-hero-actions">
-              <Link className="button-link" href="/formacoes">Explorar formações</Link>
-              <Link className="button-link ghost" href="/conta">Acessar minha área</Link>
+              {session ? (
+                <>
+                  <Link className="button-link" href="/conta">Minha área</Link>
+                  <form action={signOut}>
+                    <button className="button-link ghost" type="submit">Sair</button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <Link className="button-link" href="/inscricao">Cadastrar</Link>
+                  <Link className="button-link ghost" href="/entrar">Entrar</Link>
+                </>
+              )}
             </p>
           </div>
           <aside className="hero-facts">

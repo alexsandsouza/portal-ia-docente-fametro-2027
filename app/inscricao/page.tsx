@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GoogleButton } from "@/app/inscricao/google-button";
 import { resendAccess, submitEnrollment } from "@/app/inscricao/actions";
 import { messages } from "@/lib/messages/pt-br";
@@ -13,6 +14,9 @@ export default async function InscricaoPage({
       <h1 className="text-4xl">Inscrição</h1>
       <p className="mt-3 max-w-xl leading-7 text-[var(--fametro-muted)]">
         Informe nome, sobrenome, CPF e e-mail. Depois do envio, a sua área mostra o perfil e o comprovante.
+      </p>
+      <p className="mt-3">
+        Já tem cadastro? <Link href="/entrar">Entrar</Link>
       </p>
       <form action={submitEnrollment} className="inscricao-card mt-8 grid max-w-xl gap-4">
         <label className="grid gap-1" htmlFor="givenName">

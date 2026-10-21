@@ -62,6 +62,110 @@ a {
   border-bottom: 1px solid var(--fametro-line);
 }
 
+.brand-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 0.85rem 0;
+}
+
+.site-menu {
+  display: contents;
+}
+
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--fametro-line);
+  border-radius: 0.8rem;
+  background: white;
+  padding: 0;
+}
+
+.menu-icon {
+  display: block;
+  width: 1.15rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--fametro-navy);
+  box-shadow: 0 -6px 0 var(--fametro-navy), 0 6px 0 var(--fametro-navy);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon {
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon::before,
+.menu-toggle[aria-expanded="true"] .menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.15rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--fametro-navy);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon::before {
+  transform: rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-icon::after {
+  transform: rotate(-45deg);
+}
+
+.site-nav {
+  display: none;
+  flex-basis: 100%;
+  gap: 0.15rem 1.15rem;
+  margin: 0;
+  padding: 0.2rem 0 0.85rem;
+}
+
+.site-nav.open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.site-nav a {
+  color: var(--fametro-navy);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.45rem 0;
+}
+
+.site-nav a.header-enter {
+  padding: 0.4rem 0.9rem;
+}
+
+.site-nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.45rem;
+}
+
+.header-exit {
+  border: 1px solid var(--fametro-line);
+  border-radius: 999px;
+  background: white;
+  color: var(--fametro-navy);
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+}
+
 .page {
   width: min(72rem, calc(100% - 2rem));
   margin: 0 auto;
@@ -723,6 +827,33 @@ button.quiet {
   .contact-layout {
     grid-template-columns: 0.8fr 1.2fr;
     align-items: start;
+  }
+}
+
+@media (min-width: 960px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .site-nav,
+  .site-nav.open {
+    display: flex;
+    flex: 1;
+    flex-basis: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .site-nav a {
+    padding: 0.2rem 0;
+  }
+
+  .site-nav-actions {
+    margin-top: 0;
+    margin-left: 0.35rem;
   }
 }
 
