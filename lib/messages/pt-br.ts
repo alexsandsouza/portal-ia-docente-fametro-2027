@@ -2,7 +2,9 @@ export const messages = {
   formation: "Formação Docente 2027",
   institution: "Centro Universitário CEUNI FAMETRO",
   skip: "Pular para o conteúdo",
-  homeTitle: "Portal IA Docente FAMETRO 2027",
+  homeTitle: "Sistema de Formação Docente FAMETRO 2027",
+  cpfInvalid: "Informe um CPF válido.",
+  duplicateCpf: "este CPF já possui inscrição",
   localMode:
     "Modo local: os dados ficam na memória deste processo. Nenhum projeto Supabase foi configurado.",
   databaseMode: "As inscrições ficam guardadas no banco do projeto.",

@@ -7,6 +7,7 @@ import { messages } from "@/lib/messages/pt-br";
 import { isOperationalEmail } from "@/lib/auth/operational";
 import { registerInvalidAttempt, type RateBucket, type RateScope } from "@/lib/rate-limit";
 import { normalizeEmail } from "@/lib/validation/email";
+import { normalizeCpf } from "@/lib/validation/cpf";
 import { normalizeName } from "@/lib/validation/name";
 
 export type EnrollmentStatus = "pending" | "confirmed";
@@ -15,7 +16,10 @@ export type RequestKind = "access" | "correction" | "deletion";
 
 export type Participant = {
   id: string;
+  givenName: string;
+  familyName: string;
   fullName: string;
+  cpf: string | null;
   email: string;
   accessLinkVersion: number;
   accessToken: string;
@@ -179,6 +183,17 @@ function saved<T>(state: State, value: T): T {
   return value;
 }
 
+export function setParticipantCpf(email: string, cpf: string) {
+  const state = getState();
+  const person = state.participants.find((item) => item.email === normalizeEmail(email));
+  if (!person) return { ok: false as const, missing: true };
+  if (state.participants.some((item) => item.cpf === cpf && item.id !== person.id)) {
+    return { ok: false as const, duplicate: true };
+  }
+  person.cpf = cpf;
+  return saved(state, { ok: true as const });
+}
+
 function hitRate(state: State, scope: RateScope, subjectKey: string, now: number): boolean {
   const index = state.rates.findIndex((item) => item.scope === scope && item.subjectKey === subjectKey);
   const current = index >= 0 ? state.rates[index] : undefined;
@@ -189,23 +204,36 @@ function hitRate(state: State, scope: RateScope, subjectKey: string, now: number
 }
 
 export function createEnrollment(input: {
-  fullName: string;
+  fullName?: string;
+  givenName?: string;
+  familyName?: string;
+  cpf?: string;
   email: string;
   now?: number;
   ids?: { participantId: string; enrollmentId: string; code: string; accessToken: string };
 }) {
   const state = getState();
   const now = input.now ?? Date.now();
-  const fullName = normalizeName(input.fullName);
+  const givenName = normalizeName(input.givenName ?? "");
+  const familyName = normalizeName(input.familyName ?? "");
+  const combined = givenName && familyName ? `${givenName} ${familyName}` : null;
+  const fullName = combined ?? normalizeName(input.fullName ?? "");
   const email = normalizeEmail(input.email);
+  const cpf = input.cpf === undefined || input.cpf.trim() === "" ? null : normalizeCpf(input.cpf);
   const subjectKey = email ?? "invalid";
+  if (input.cpf && !cpf) {
+    return saved(state, { ok: false as const, field: "cpf", message: messages.cpfInvalid });
+  }
   if (!fullName || !email) {
     const blocked = hitRate(state, "enrollment", subjectKey, now);
     return saved(state, {
       ok: false as const,
-      field: !fullName ? "fullName" : "email",
+      field: !fullName ? "givenName" : "email",
       message: blocked ? messages.rateLimited : !fullName ? messages.nameRequired : messages.emailInvalid,
     });
+  }
+  if (cpf && state.participants.some((item) => item.cpf === cpf)) {
+    return saved(state, { ok: false as const, field: "cpf", message: messages.duplicateCpf });
   }
   const existing = state.participants.find((item) => item.email === email);
   if (existing) {
@@ -214,7 +242,10 @@ export function createEnrollment(input: {
   }
   const participant: Participant = {
     id: input.ids?.participantId ?? id("par"),
+    givenName: givenName ?? fullName.split(" ")[0] ?? fullName,
+    familyName: familyName ?? fullName.split(" ").slice(1).join(" "),
     fullName,
+    cpf,
     email,
     accessLinkVersion: 1,
     accessToken: input.ids?.accessToken ?? createOpaqueCode(),
@@ -461,6 +492,8 @@ export function recordDataRequest(email: string, kind: RequestKind, newName?: st
     if (!name) return { ok: false as const, message: messages.nameRequired };
     const previous = participant.fullName;
     participant.fullName = name;
+    participant.givenName = name.split(" ")[0] ?? name;
+    participant.familyName = name.split(" ").slice(1).join(" ");
     state.requests.push({
       id: id("req"),
       participantId: participant.id,

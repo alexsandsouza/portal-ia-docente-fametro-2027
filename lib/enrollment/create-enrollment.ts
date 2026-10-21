@@ -7,7 +7,14 @@ import { createEnrollment as createLocalEnrollment, forgetEnrollment, type Enrol
 type Created = { ok: true; participant: Participant; enrollment: Enrollment };
 type Rejected = { ok: false; field?: string; message: string };
 
-export async function createEnrollment(input: { fullName: string; email: string; now?: number }): Promise<Created | Rejected> {
+export async function createEnrollment(input: {
+  fullName?: string;
+  givenName?: string;
+  familyName?: string;
+  cpf?: string;
+  email: string;
+  now?: number;
+}): Promise<Created | Rejected> {
   const supabase = createSupabaseAdminClient();
   const ids = supabase
     ? {
@@ -22,9 +29,19 @@ export async function createEnrollment(input: { fullName: string; email: string;
 
   const participant = created.participant;
   const enrollment = created.enrollment;
+  if (participant.cpf) {
+    const existingCpf = await supabase.from("participant").select("id").eq("cpf", participant.cpf).maybeSingle();
+    if (existingCpf.data) {
+      forgetEnrollment(participant.email);
+      return { ok: false, field: "cpf", message: messages.duplicateCpf };
+    }
+  }
   const participantInsert = await supabase.from("participant").insert({
     id: participant.id,
     full_name: participant.fullName,
+    given_name: participant.givenName,
+    family_name: participant.familyName,
+    cpf: participant.cpf,
     email: participant.email,
     access_link_version: participant.accessLinkVersion,
     created_at: participant.createdAt,

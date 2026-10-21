@@ -4,10 +4,12 @@ for (const width of [390, 1280]) {
   test(`inscrição tem rótulos em português na largura ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/inscricao");
-    await expect(page.getByLabel("Nome completo")).toBeVisible();
-    await expect(page.getByLabel("E-mail")).toBeVisible();
-    await page.getByLabel("Nome completo").focus();
-    await expect(page.getByLabel("Nome completo")).toBeFocused();
+    await expect(page.getByLabel("Nome", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Sobrenome")).toBeVisible();
+    await expect(page.getByLabel("CPF")).toBeVisible();
+    await expect(page.getByLabel("E-mail", { exact: true })).toBeVisible();
+    await page.getByLabel("Nome", { exact: true }).focus();
+    await expect(page.getByLabel("Nome", { exact: true })).toBeFocused();
   });
 }
 

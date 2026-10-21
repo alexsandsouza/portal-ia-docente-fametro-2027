@@ -2,15 +2,19 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { writeSession } from "@/lib/auth/session";
 import { issueAccessLink, accessPath } from "@/lib/auth/send-access-link";
 import { createEnrollment } from "@/lib/enrollment/create-enrollment";
 import { sendAccessEmail } from "@/lib/mail/gmail";
+import { confirmLink } from "@/lib/store/memory";
+import { openParticipantSession, renewRemoteAccessLink } from "@/lib/store/remote-portal";
 import { normalizeEmail } from "@/lib/validation/email";
-import { renewRemoteAccessLink } from "@/lib/store/remote-portal";
 
 export async function submitEnrollment(formData: FormData) {
   const result = await createEnrollment({
-    fullName: String(formData.get("fullName") ?? ""),
+    givenName: String(formData.get("givenName") ?? ""),
+    familyName: String(formData.get("familyName") ?? ""),
+    cpf: String(formData.get("cpf") ?? ""),
     email: String(formData.get("email") ?? ""),
   });
   if (!result.ok) {
@@ -18,21 +22,16 @@ export async function submitEnrollment(formData: FormData) {
     redirect(`/inscricao?${params.toString()}`);
   }
   const path = accessPath(result.participant);
-  const sent = await sendAccessEmail({
+  await sendAccessEmail({
     to: result.participant.email,
     fullName: result.participant.fullName,
     url: `${await publicOrigin()}${path}`,
   });
-  const params = new URLSearchParams({
-    id: result.enrollment.id,
-    estado: result.enrollment.status,
-    nome: result.participant.fullName,
-    destino: result.participant.email,
-    quando: result.enrollment.createdAt,
-    vinculo: path,
-    email: sent.ok ? "enviado" : sent.reason === "failed" ? "falhou" : "pendente",
-  });
-  redirect(`/inscricao?${params.toString()}`);
+  const local = confirmLink(result.participant.email, result.participant.accessLinkVersion, result.participant.accessToken);
+  const remote = await openParticipantSession(result.participant.email, result.participant.accessLinkVersion);
+  const session = remote ?? local;
+  if (session) await writeSession(session.id);
+  redirect("/conta");
 }
 
 export async function resendAccess(formData: FormData) {

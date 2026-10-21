@@ -62,11 +62,14 @@ export async function loadRemoteRecord(email: string): Promise<RemoteRecord | nu
   const supabase = createSupabaseAdminClient();
   const normalized = normalizeEmail(email);
   if (!supabase || !normalized) return null;
-  const { data: person } = await supabase.from("participant").select("id,full_name,email,access_link_version,created_at").eq("email", normalized).maybeSingle();
+  const { data: person } = await supabase.from("participant").select("id,full_name,given_name,family_name,cpf,email,access_link_version,created_at").eq("email", normalized).maybeSingle();
   if (!person) return null;
   const participant: Participant = {
     id: person.id,
+    givenName: person.given_name || String(person.full_name).split(" ")[0] || person.full_name,
+    familyName: person.family_name || String(person.full_name).split(" ").slice(1).join(" "),
     fullName: person.full_name,
+    cpf: person.cpf,
     email: person.email,
     accessLinkVersion: person.access_link_version,
     accessToken: "",
@@ -158,7 +161,10 @@ export async function renewRemoteAccessLink(email: string) {
   if (link.error) return null;
   const participant: Participant = {
     id: "",
+    givenName: person.full_name.split(" ")[0] ?? person.full_name,
+    familyName: person.full_name.split(" ").slice(1).join(" "),
     fullName: person.full_name,
+    cpf: null,
     email: person.email,
     accessLinkVersion: version,
     accessToken: token,
