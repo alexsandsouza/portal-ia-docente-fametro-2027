@@ -5,7 +5,6 @@ import { messages } from "@/lib/messages/pt-br";
 const sections = [
   ["/", "Início"],
   ["/inscricao", "Inscrição"],
-  ["/conta", "Minha área"],
 ];
 
 export function SiteHeader() {
@@ -21,6 +20,9 @@ export function SiteHeader() {
               {label}
             </Link>
           ))}
+          <Link className="header-enter" href="/conta">
+            Minha área
+          </Link>
         </nav>
       </div>
       <p className="sr-only">{messages.homeTitle}</p>

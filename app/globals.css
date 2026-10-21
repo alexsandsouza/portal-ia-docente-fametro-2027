@@ -144,6 +144,9 @@ button.quiet {
 .home-hero-copy {
   position: relative;
   z-index: 1;
+  display: grid;
+  gap: 2rem;
+  align-items: end;
   width: min(72rem, calc(100% - 2rem));
   margin: 0 auto;
   padding: 4.5rem 0 3.75rem;
@@ -151,9 +154,21 @@ button.quiet {
 
 .home-hero h1 {
   color: white;
-  max-width: 12em;
-  font-size: clamp(2.15rem, 4.2vw, 3.35rem);
-  line-height: 1.05;
+  max-width: 11em;
+  font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.home-hero h1 span {
+  color: rgb(244 247 251 / 86%);
+}
+
+.home-hero-place {
+  margin-top: 1rem;
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 
 .home-hero-lead {
@@ -172,9 +187,183 @@ button.quiet {
   margin-top: 2rem;
 }
 
-.home-hero-actions a:not(.button-link) {
+.button-link.ghost {
+  background: transparent;
   color: white;
-  text-underline-offset: 0.2rem;
+  border: 1px solid rgb(255 255 255 / 75%);
+}
+
+.header-enter {
+  border: 1px solid var(--fametro-navy);
+  border-radius: 999px;
+  color: var(--fametro-navy);
+  padding: 0.4rem 0.9rem;
+  text-decoration: none;
+}
+
+.hero-facts {
+  border: 1px solid rgb(255 255 255 / 28%);
+  border-radius: 1.25rem;
+  background: rgb(8 24 70 / 42%);
+  padding: 1.25rem 1.3rem 1.4rem;
+  backdrop-filter: blur(8px);
+}
+
+.hero-facts-kicker {
+  color: rgb(244 247 251 / 80%);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-facts h2 {
+  margin-top: 0.4rem;
+  color: white;
+  font-size: 1.35rem;
+}
+
+.hero-facts ul {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1rem 0 1.2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-facts li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hero-facts strong {
+  color: white;
+}
+
+.hero-facts span,
+.hero-facts a {
+  color: rgb(244 247 251 / 88%);
+}
+
+.story-band {
+  background: #0b1f4d;
+  color: white;
+  padding: 4.5rem 1rem;
+  text-align: center;
+}
+
+.story-band h2 {
+  color: white;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.story-card {
+  width: min(46rem, 100%);
+  margin: 1.5rem auto 0;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.6rem;
+  text-align: left;
+  line-height: 1.75;
+}
+
+.story-card p + p {
+  margin-top: 1rem;
+}
+
+.story-place {
+  color: rgb(244 247 251 / 78%);
+  font-weight: 700;
+}
+
+.path-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.path-list li {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: 0.8rem;
+  align-items: start;
+  border: 1px solid var(--fametro-line);
+  border-radius: 1rem;
+  background: white;
+  padding: 1rem 1.1rem;
+}
+
+.path-list li > span {
+  color: var(--fametro-navy);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.path-list strong {
+  color: var(--fametro-navy);
+}
+
+.path-list p {
+  margin-top: 0.25rem;
+  color: var(--fametro-muted);
+  line-height: 1.6;
+}
+
+.goal-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.goal-card {
+  border: 1px solid var(--fametro-line);
+  border-radius: 1rem;
+  background: white;
+  padding: 1.2rem 1.15rem;
+}
+
+.goal-card strong {
+  display: block;
+  color: var(--fametro-navy);
+  font-size: 1.15rem;
+}
+
+.goal-card p {
+  margin-top: 0.45rem;
+  color: var(--fametro-muted);
+  line-height: 1.6;
+}
+
+.closing {
+  background: var(--fametro-navy);
+  color: white;
+  text-align: center;
+  padding: 3.5rem 1rem 4rem;
+}
+
+.closing h2 {
+  color: white;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.closing p {
+  max-width: 34rem;
+  margin: 0.8rem auto 1.4rem;
+  color: rgb(244 247 251 / 88%);
+  line-height: 1.7;
+}
+
+@media (min-width: 900px) {
+  .home-hero-copy {
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+  }
+
+  .goal-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 700px) {
