@@ -2,6 +2,7 @@ import { messages } from "@/lib/messages/pt-br";
 
 type Mail = {
   to: string;
+  replyTo?: string;
   subject: string;
   text: string;
   attachments?: Array<{ filename: string; content: Buffer; contentType: string }>;
@@ -30,6 +31,7 @@ export async function sendGmail(message: Mail) {
     await transport.sendMail({
       from,
       to: message.to,
+      replyTo: message.replyTo,
       subject: message.subject,
       text: message.text,
       attachments: message.attachments,

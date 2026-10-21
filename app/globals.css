@@ -89,7 +89,8 @@ main h2 {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border: 1px solid #b7c7dc;
   border-radius: 0.7rem;
@@ -505,6 +506,93 @@ button.quiet {
 .profile-list dt {
   color: var(--fametro-muted);
   font-weight: 700;
+}
+
+.account-banner {
+  border-radius: 1rem;
+  background: var(--fametro-navy);
+  color: white;
+  padding: 1.4rem 1.5rem;
+}
+
+.account-banner h1 {
+  color: white;
+  margin-top: 0.25rem;
+}
+
+.account-banner h1::after {
+  display: none;
+}
+
+.account-banner p:last-child {
+  color: rgb(244 247 251 / 82%);
+}
+
+.account-alert {
+  margin-top: 1rem;
+  border: 1px solid #e7c56a;
+  border-radius: 1rem;
+  background: #fff8e8;
+  padding: 1.1rem 1.2rem;
+}
+
+.account-alert h2 {
+  font-size: 1.15rem;
+}
+
+.account-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.contact-layout {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.contact-topics {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-topics li {
+  border: 1px solid var(--fametro-line);
+  border-radius: 1rem;
+  background: white;
+  padding: 0.9rem 1rem;
+}
+
+.contact-topics strong {
+  display: block;
+  color: var(--fametro-navy);
+}
+
+.contact-topics span {
+  color: var(--fametro-muted);
+}
+
+.contact-trap {
+  position: absolute;
+  left: -10000px;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}
+
+@media (min-width: 800px) {
+  .account-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-layout {
+    grid-template-columns: 0.8fr 1.2fr;
+    align-items: start;
+  }
 }
 
 .site-footer {

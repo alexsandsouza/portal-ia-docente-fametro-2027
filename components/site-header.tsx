@@ -8,6 +8,7 @@ const sections = [
   ["/formacoes", "Formações"],
   ["/programacao", "Programação"],
   ["/orientacoes", "Orientações"],
+  ["/contato", "Fale conosco"],
 ];
 
 export function SiteHeader() {

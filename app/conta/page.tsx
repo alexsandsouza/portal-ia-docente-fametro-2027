@@ -19,59 +19,86 @@ export default async function ContaPage({
   if (!record?.enrollment) {
     return (
       <main className="page">
-        <h1 className="text-4xl">Minha jornada docente</h1>
+        <p className="hero-kicker">Área exclusiva</p>
+        <h1 className="mt-5 text-4xl">Minha jornada docente</h1>
         <p className="mt-4 max-w-xl leading-7 text-[var(--fametro-muted)]">
-          Acompanhe suas inscrições, materiais disponíveis e certificados emitidos. Faça a inscrição ou abra o vínculo enviado ao seu e-mail.
+          Este espaço mostra o perfil, a inscrição, os materiais e o certificado de quem já se cadastrou. O acesso chega pelo vínculo enviado ao e-mail da inscrição.
         </p>
-        <p className="mt-6">
+        <p className="mt-6 flex flex-wrap gap-4">
           <Link className="button-link" href="/inscricao">Fazer inscrição</Link>
+          <Link href="/contato">Fale conosco</Link>
         </p>
       </main>
     );
   }
-  const cpf = record.participant.cpf ? maskCpf(record.participant.cpf) : "Não informado";
+  const cpf = record.participant.cpf ? maskCpf(record.participant.cpf) : "";
   return (
     <main className="page">
-      <h1 className="text-4xl">Minha jornada docente</h1>
-      <p className="mt-3 max-w-2xl leading-7 text-[var(--fametro-muted)]">
-        Acompanhe suas inscrições, registros de participação, materiais disponíveis e certificados emitidos.
-      </p>
-      <section className="inscricao-card mt-8 max-w-xl">
-        <h2>Perfil</h2>
-        <dl className="profile-list">
-          <dt>Nome</dt>
-          <dd>{record.participant.givenName}</dd>
-          <dt>Sobrenome</dt>
-          <dd>{record.participant.familyName || "—"}</dd>
-          <dt>CPF</dt>
-          <dd>{cpf}</dd>
-          <dt>E-mail</dt>
-          <dd>{record.participant.email}</dd>
-        </dl>
-        {record.participant.cpf ? null : (
-          <form action={saveCpf} className="mt-4 grid gap-2">
+      <section className="account-banner">
+        <p>Bem-vindo</p>
+        <h1>{record.participant.fullName}</h1>
+        <p>{record.participant.email}</p>
+      </section>
+      {cpf ? null : (
+        <section className="account-alert">
+          <h2>Perfil incompleto</h2>
+          <p>Informe o CPF para completar o cadastro. Ele fica visível só para você, de forma mascarada.</p>
+          <form action={saveCpf} className="mt-3 grid max-w-sm gap-2">
             <label className="grid gap-1" htmlFor="cpf">
-              Informar CPF
+              CPF
               <input id="cpf" name="cpf" inputMode="numeric" autoComplete="off" placeholder="000.000.000-00" required />
             </label>
-            <button type="submit">Guardar CPF</button>
+            <button type="submit">Completar perfil</button>
             {query.erro ? <p className="text-red-800">{query.erro}</p> : null}
           </form>
-        )}
+        </section>
+      )}
+      <section className="account-grid">
+        <article className="goal-card">
+          <h2>Perfil</h2>
+          <dl className="profile-list">
+            <dt>Nome</dt>
+            <dd>{record.participant.givenName}</dd>
+            <dt>Sobrenome</dt>
+            <dd>{record.participant.familyName || "—"}</dd>
+            <dt>CPF</dt>
+            <dd>{cpf || "Não informado"}</dd>
+            <dt>E-mail</dt>
+            <dd>{record.participant.email}</dd>
+          </dl>
+        </article>
+        <article className="goal-card">
+          <h2>Minha inscrição</h2>
+          <p>A Formação Docente 2027 está registrada neste e-mail. O comprovante completo fica abaixo.</p>
+          <p className="mt-3"><Link href="#comprovante">Ver comprovante</Link></p>
+        </article>
+        <Link className="portal-card" href="/programacao">
+          <span className="block text-lg font-extrabold">Programação</span>
+          <span className="mt-1 block text-sm font-medium text-[var(--fametro-muted)]">A programação será publicada assim que estiver confirmada.</span>
+        </Link>
+        <Link className="portal-card" href="/materiais">
+          <span className="block text-lg font-extrabold">Materiais</span>
+          <span className="mt-1 block text-sm font-medium text-[var(--fametro-muted)]">Liberados ao final do evento.</span>
+        </Link>
+        <Link className="portal-card" href="/certificado">
+          <span className="block text-lg font-extrabold">Certificado</span>
+          <span className="mt-1 block text-sm font-medium text-[var(--fametro-muted)]">Disponível depois da autorização da equipe.</span>
+        </Link>
+        <Link className="portal-card" href="/contato">
+          <span className="block text-lg font-extrabold">Fale conosco</span>
+          <span className="mt-1 block text-sm font-medium text-[var(--fametro-muted)]">Dúvidas sobre inscrição, materiais ou certificado.</span>
+        </Link>
       </section>
-      <Receipt
-        id={record.enrollment.id}
-        status={record.enrollment.status}
-        link={record.participant.accessToken ? accessPath(record.participant) : "/ficha"}
-        nome={record.participant.fullName}
-        destino={record.participant.email}
-        quando={record.enrollment.createdAt}
-      />
-      <p className="mt-8 flex flex-wrap gap-4">
-        <Link href="/materiais">Materiais</Link>
-        <Link href="/certificado">Certificado</Link>
-        <Link href="/ficha">Ficha</Link>
-      </p>
+      <div id="comprovante">
+        <Receipt
+          id={record.enrollment.id}
+          status={record.enrollment.status}
+          link={record.participant.accessToken ? accessPath(record.participant) : "/ficha"}
+          nome={record.participant.fullName}
+          destino={record.participant.email}
+          quando={record.enrollment.createdAt}
+        />
+      </div>
     </main>
   );
 }
