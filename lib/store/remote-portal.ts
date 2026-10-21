@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { createOpaqueCode } from "@/lib/check-in/code";
+import { accessPath } from "@/lib/auth/send-access-link";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { normalizeEmail } from "@/lib/validation/email";
 import type { Certificate, Enrollment, Participant, Session } from "@/lib/store/memory";
@@ -117,6 +119,52 @@ export async function loadRemoteRecord(email: string): Promise<RemoteRecord | nu
       : null,
     code: codeRow?.code ?? null,
   };
+}
+
+export async function openParticipantSession(email: string, version: number): Promise<Session | null> {
+  const supabase = createSupabaseAdminClient();
+  const normalized = normalizeEmail(email);
+  if (!supabase || !normalized) return null;
+  const session: Session = { id: randomUUID(), email: normalized, role: "participant", version };
+  const { error } = await supabase.from("operational_action").insert({
+    actor_id: normalized,
+    action: "session",
+    target_type: `participant:${version}`,
+    target_id: session.id,
+  });
+  return error ? null : session;
+}
+
+export async function renewRemoteAccessLink(email: string) {
+  const supabase = createSupabaseAdminClient();
+  const normalized = normalizeEmail(email);
+  if (!supabase || !normalized) return null;
+  const { data: person } = await supabase
+    .from("participant")
+    .select("full_name,email,access_link_version")
+    .eq("email", normalized)
+    .maybeSingle();
+  if (!person) return null;
+  const version = Number(person.access_link_version) + 1;
+  const token = createOpaqueCode();
+  const updated = await supabase.from("participant").update({ access_link_version: version }).eq("email", normalized);
+  if (updated.error) return null;
+  const link = await supabase.from("operational_action").insert({
+    actor_id: normalized,
+    action: "access-link",
+    target_type: String(version),
+    target_id: token,
+  });
+  if (link.error) return null;
+  const participant: Participant = {
+    id: "",
+    fullName: person.full_name,
+    email: person.email,
+    accessLinkVersion: version,
+    accessToken: token,
+    createdAt: new Date().toISOString(),
+  };
+  return { participant, path: accessPath(participant) };
 }
 
 export async function loadPublishedMaterials() {

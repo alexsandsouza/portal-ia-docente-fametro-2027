@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return new NextResponse(messages.linkReplaced, { status: 403, headers: { "content-type": "text/plain; charset=utf-8" } });
   }
   const headers = new Headers();
-  headers.set("location", "/ficha");
+  headers.set("location", "/inscricao/comprovante");
   headers.append("set-cookie", `${COOKIE}=${session.id}; Path=/; HttpOnly; SameSite=Lax`);
   return new NextResponse(null, { status: 303, headers });
 }
