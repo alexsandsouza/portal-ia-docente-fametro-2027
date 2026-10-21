@@ -1,11 +1,18 @@
 import Link from "next/link";
+import QRCode from "qrcode";
 import { saveCpf } from "@/app/conta/actions";
 import { Receipt } from "@/app/inscricao/receipt";
+import { PhotoUpload } from "@/components/photo-upload";
 import { readSession } from "@/lib/auth/session";
 import { accessPath } from "@/lib/auth/send-access-link";
-import { recordFor } from "@/lib/records/participant-record";
+import { messages } from "@/lib/messages/pt-br";
+import { recordFor, codeByEnrollment } from "@/lib/store/memory";
 import { loadRemoteRecord } from "@/lib/store/remote-portal";
 import { maskCpf } from "@/lib/validation/cpf";
+
+function initials(given: string, family: string) {
+  return `${given.charAt(0)}${family.charAt(0)}`.trim().toUpperCase() || "FD";
+}
 
 export default async function ContaPage({
   searchParams,
@@ -32,13 +39,41 @@ export default async function ContaPage({
     );
   }
   const cpf = record.participant.cpf ? maskCpf(record.participant.cpf) : "";
+  const remoteCode = "code" in record && typeof record.code === "string" ? record.code : null;
+  const registrationCode = codeByEnrollment(record.enrollment.id)?.code ?? remoteCode;
+  const qr = registrationCode
+    ? await QRCode.toDataURL(registrationCode, { margin: 1, width: 280, errorCorrectionLevel: "M" })
+    : null;
   return (
     <main className="page">
-      <section className="account-banner">
-        <p>Bem-vindo</p>
-        <h1>{record.participant.fullName}</h1>
-        <p>{record.participant.email}</p>
-      </section>
+      <article className="credential">
+        <PhotoUpload current={record.participant.photo} initials={initials(record.participant.givenName, record.participant.familyName)} />
+        <div className="credential-body">
+          <p className="hero-kicker">{messages.formation}</p>
+          <h1>{record.participant.fullName}</h1>
+          <p className="credential-place">{messages.institution}</p>
+          <dl className="credential-meta">
+            <div>
+              <dt>E-mail</dt>
+              <dd>{record.participant.email}</dd>
+            </div>
+            <div>
+              <dt>CPF</dt>
+              <dd>{cpf || "Não informado"}</dd>
+            </div>
+            <div>
+              <dt>Inscrição</dt>
+              <dd>Confirmada</dd>
+            </div>
+          </dl>
+        </div>
+        {qr ? (
+          <div className="credential-qr">
+            <img src={qr} alt="QR Code do registro da inscrição" width={148} height={148} />
+            <p>Registro da inscrição</p>
+          </div>
+        ) : null}
+      </article>
       {cpf ? null : (
         <section className="account-alert">
           <h2>Perfil incompleto</h2>
@@ -53,25 +88,8 @@ export default async function ContaPage({
           </form>
         </section>
       )}
+      {query.erro && cpf ? <p className="mt-4 text-red-800">{query.erro}</p> : null}
       <section className="account-grid">
-        <article className="goal-card">
-          <h2>Perfil</h2>
-          <dl className="profile-list">
-            <dt>Nome</dt>
-            <dd>{record.participant.givenName}</dd>
-            <dt>Sobrenome</dt>
-            <dd>{record.participant.familyName || "—"}</dd>
-            <dt>CPF</dt>
-            <dd>{cpf || "Não informado"}</dd>
-            <dt>E-mail</dt>
-            <dd>{record.participant.email}</dd>
-          </dl>
-        </article>
-        <article className="goal-card">
-          <h2>Minha inscrição</h2>
-          <p>A Formação Docente 2027 está registrada neste e-mail. O comprovante completo fica abaixo.</p>
-          <p className="mt-3"><Link href="#comprovante">Ver comprovante</Link></p>
-        </article>
         <Link className="portal-card" href="/programacao">
           <span className="block text-lg font-extrabold">Programação</span>
           <span className="mt-1 block text-sm font-medium text-[var(--fametro-muted)]">A programação será publicada assim que estiver confirmada.</span>

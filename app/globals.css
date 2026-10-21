@@ -508,6 +508,123 @@ button.quiet {
   font-weight: 700;
 }
 
+.credential {
+  display: grid;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 0.25rem;
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(200 16 46 / 42%), transparent 32%),
+    linear-gradient(145deg, #0a2f86, #0e4eab 72%);
+  color: white;
+  padding: 1.35rem;
+  box-shadow: 0 22px 50px rgb(10 47 134 / 22%);
+}
+
+.credential-photo {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+
+.credential-photo img,
+.credential-initials {
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 35%);
+}
+
+.credential-initials {
+  display: grid;
+  place-items: center;
+  background: var(--fametro-navy);
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.photo-button {
+  border: 0;
+  border-radius: 999px;
+  background: white;
+  color: var(--fametro-navy);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+}
+
+.photo-message {
+  max-width: 9rem;
+  color: #ffe08a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.credential-body h1 {
+  margin-top: 0.7rem;
+  color: white;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.credential-body h1::after {
+  background: var(--fametro-red);
+}
+
+.credential-place {
+  margin-top: 0.35rem;
+  color: rgb(244 247 251 / 82%);
+  font-weight: 700;
+}
+
+.credential-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.credential-meta dt {
+  color: rgb(244 247 251 / 68%);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.credential-meta dd {
+  color: white;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.credential-qr {
+  justify-self: center;
+  min-width: 11.5rem;
+  border: 1px solid var(--fametro-line);
+  border-radius: 1rem;
+  background: white;
+  padding: 0.75rem 0.85rem 0.65rem;
+  text-align: center;
+}
+
+.credential-qr img {
+  width: 9.25rem;
+  height: 9.25rem;
+}
+
+.credential-qr p {
+  margin-top: 0.4rem;
+  color: var(--fametro-navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
 .account-banner {
   border-radius: 1rem;
   background: var(--fametro-navy);
@@ -585,6 +702,20 @@ button.quiet {
 }
 
 @media (min-width: 800px) {
+  .credential {
+    grid-template-columns: 10.5rem 1fr auto;
+  }
+
+  .credential-meta {
+    grid-template-columns: auto auto;
+    justify-content: start;
+    column-gap: 2.25rem;
+  }
+
+  .credential-meta > div:first-child {
+    grid-column: 1 / -1;
+  }
+
   .account-grid {
     grid-template-columns: 1fr 1fr;
   }

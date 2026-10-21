@@ -20,6 +20,7 @@ export type Participant = {
   familyName: string;
   fullName: string;
   cpf: string | null;
+  photo: string | null;
   email: string;
   accessLinkVersion: number;
   accessToken: string;
@@ -194,6 +195,14 @@ export function setParticipantCpf(email: string, cpf: string) {
   return saved(state, { ok: true as const });
 }
 
+export function setParticipantPhoto(email: string, photo: string) {
+  const state = getState();
+  const person = state.participants.find((item) => item.email === normalizeEmail(email));
+  if (!person) return { ok: false as const };
+  person.photo = photo;
+  return saved(state, { ok: true as const });
+}
+
 function hitRate(state: State, scope: RateScope, subjectKey: string, now: number): boolean {
   const index = state.rates.findIndex((item) => item.scope === scope && item.subjectKey === subjectKey);
   const current = index >= 0 ? state.rates[index] : undefined;
@@ -246,6 +255,7 @@ export function createEnrollment(input: {
     familyName: familyName ?? fullName.split(" ").slice(1).join(" "),
     fullName,
     cpf,
+    photo: null,
     email,
     accessLinkVersion: 1,
     accessToken: input.ids?.accessToken ?? createOpaqueCode(),

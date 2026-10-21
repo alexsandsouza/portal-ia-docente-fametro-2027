@@ -70,11 +70,14 @@ export async function loadRemoteRecord(email: string): Promise<RemoteRecord | nu
     familyName: person.family_name || String(person.full_name).split(" ").slice(1).join(" "),
     fullName: person.full_name,
     cpf: person.cpf,
+    photo: null,
     email: person.email,
     accessLinkVersion: person.access_link_version,
     accessToken: "",
     createdAt: person.created_at,
   };
+  const portrait = await supabase.storage.from("avatars").createSignedUrl(`${person.id}.jpg`, 60 * 60);
+  if (!portrait.error) participant.photo = portrait.data.signedUrl;
   const { data: enrollmentRow } = await supabase
     .from("enrollment")
     .select("id,participant_id,status,created_at,confirmed_at,confirmed_by")
@@ -165,6 +168,7 @@ export async function renewRemoteAccessLink(email: string) {
     familyName: person.full_name.split(" ").slice(1).join(" "),
     fullName: person.full_name,
     cpf: null,
+    photo: null,
     email: person.email,
     accessLinkVersion: version,
     accessToken: token,
