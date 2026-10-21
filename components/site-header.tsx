@@ -4,7 +4,10 @@ import { messages } from "@/lib/messages/pt-br";
 
 const sections = [
   ["/", "Início"],
-  ["/inscricao", "Inscrição"],
+  ["/o-portal", "O Portal"],
+  ["/formacoes", "Formações"],
+  ["/programacao", "Programação"],
+  ["/orientacoes", "Orientações"],
 ];
 
 export function SiteHeader() {

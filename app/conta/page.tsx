@@ -19,9 +19,9 @@ export default async function ContaPage({
   if (!record?.enrollment) {
     return (
       <main className="page">
-        <h1 className="text-4xl">Minha área</h1>
+        <h1 className="text-4xl">Minha jornada docente</h1>
         <p className="mt-4 max-w-xl leading-7 text-[var(--fametro-muted)]">
-          Faça a inscrição ou abra o vínculo enviado ao seu e-mail para ver o perfil e o comprovante.
+          Acompanhe suas inscrições, materiais disponíveis e certificados emitidos. Faça a inscrição ou abra o vínculo enviado ao seu e-mail.
         </p>
         <p className="mt-6">
           <Link className="button-link" href="/inscricao">Fazer inscrição</Link>
@@ -32,7 +32,10 @@ export default async function ContaPage({
   const cpf = record.participant.cpf ? maskCpf(record.participant.cpf) : "Não informado";
   return (
     <main className="page">
-      <h1 className="text-4xl">Minha área</h1>
+      <h1 className="text-4xl">Minha jornada docente</h1>
+      <p className="mt-3 max-w-2xl leading-7 text-[var(--fametro-muted)]">
+        Acompanhe suas inscrições, registros de participação, materiais disponíveis e certificados emitidos.
+      </p>
       <section className="inscricao-card mt-8 max-w-xl">
         <h2>Perfil</h2>
         <dl className="profile-list">

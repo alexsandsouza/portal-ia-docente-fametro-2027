@@ -2,7 +2,7 @@ export const messages = {
   formation: "Formação Docente 2027",
   institution: "Centro Universitário CEUNI FAMETRO",
   skip: "Pular para o conteúdo",
-  homeTitle: "Sistema de Formação Docente FAMETRO 2027",
+  homeTitle: "Portal de Formação Continuada Docente | CEUNI FAMETRO",
   cpfInvalid: "Informe um CPF válido.",
   duplicateCpf: "este CPF já possui inscrição",
   localMode:
